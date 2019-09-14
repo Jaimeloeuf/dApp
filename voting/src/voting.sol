@@ -1,28 +1,27 @@
-pragma solidity ^0.5.11
+pragma solidity 0.5.11;
 
 contract Voting {
 
-    mapping (bytes32 ==> uint8) public votesReceived
+    mapping (string => uint8) public votesReceived;
 
-    bytes32 public candidateList;
+    string public candidateList;
 
-    function Voting(bytes32 [] candidateNames) {
+    function Voting(string [] candidateNames) {
         candidateList = candidateNames;
-
     }
 
-    function totalVotes(bytes32 candidate) returns (uint8) {
+    function totalVotes(string candidate) returns (uint8) {
         return votesReceived[candidate]
     }
 
-    function voteFor(bytes32 candidate) {
+    function voteFor(string candidate) {
         if(validCandidate(candidate) == false)
             throw;
         
         votesReceived[candidate] += 1;
     }
 
-    function validcandidate(bytes32 candidate) returns (bool) {
+    function validcandidate(string candidate) returns (bool) {
         for (uint i = 0; i<candidateList.length; i++) {
             if (candidateList[i] == candidate)
                 return true;
