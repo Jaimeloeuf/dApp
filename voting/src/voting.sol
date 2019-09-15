@@ -62,16 +62,17 @@ contract Voting {
         delete(candidates[candidateName]);
     }
 
-    // function voteFor(string memory candidateName) public allExceptOwner {
-    //     // Make sure the candidate is already registered
-    //     assert(candidates[candidateName]);
-    //     // Increment the vote for that candidate by 1.
-    //     votes[candidateName] += 1;
-    // }
+    function voteFor(string memory candidateName) public allExceptOwner {
+        // Make sure the candidate is already registered
+        assert(hasCandidate(candidateName));
+        // Increment the vote for that candidate by 1.
+        candidates[candidateName].votes += 1;
+        candidates[candidateName].voters.push(msg.sender);
+    }
     
-    // function votesOf(string memory candidateName) public view returns (uint256) {
-    //     // Make sure the candidate is already registered
-    //     assert(candidates[candidateName]);
-    //     return votes[candidateName];
-    // }
+    function votesOf(string memory candidateName) public view returns (uint256) {
+        // Make sure the candidate is already registered
+        assert(hasCandidate(candidateName));
+        return candidates[candidateName].votes;
+    }
 }
