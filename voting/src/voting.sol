@@ -2,11 +2,25 @@ pragma solidity 0.5.11;
 
 contract Voting {
     // Mapping of candidates that can be voted for.
-    mapping (string => bool) public candidates;
-    // Mapping of candidates and the number of votes each of them has.
-    mapping (string => uint8) private votes;
+    mapping (string => Candidate) public candidates;
+
+    uint8 private candidateCount = 0;
+    uint8 private user_id_counter = 0;
+    
+    function userIDGenerator() internal returns (uint8) {
+        return ++user_id_counter;
+    }
+
     // Variable to store the contract owner's address.
     address public owner;
+    
+    struct Candidate {
+        uint8 id;
+        string name;
+        uint256 time_of_registration;
+        uint256 votes;
+        address[] voters;
+    }
     
     // Modifier that only allows owner of the contract
     modifier onlyOwner() {
@@ -25,33 +39,39 @@ contract Voting {
     }
     
     function hasCandidate(string memory candidate) public view returns (bool) {
-        return candidates[candidate];
+        if (candidates[candidate].id != 0)
+            return true;
     }
     
-    function newCandidate(string memory candidate) public onlyOwner {
+    function createCandidate(string memory name) private returns (Candidate memory) {
+        address[] memory _voters;
+        return Candidate(userIDGenerator(), name, block.timestamp, 0, _voters);
+    }
+    
+    function newCandidate(string memory candidateName) public onlyOwner {
         // Make sure that the candidate is not already registered
-        assert(!hasCandidate(candidate));
+        assert(!hasCandidate(candidateName));
         // Register the candidate by adding it to the Map.
-        candidates[candidate] = true;
+        candidates[candidateName] = createCandidate(candidateName);
     }
     
-    function removeCandidate(string memory candidate) public onlyOwner {
+    function removeCandidate(string memory candidateName) public onlyOwner {
         // Make sure that the candidate is already registered
-        assert(hasCandidate(candidate));
+        assert(hasCandidate(candidateName));
         // Remove the candidate by setting its value to false.
-        candidates[candidate] = false;
+        delete(candidates[candidateName]);
     }
 
-    function voteFor(string memory candidate) public allExceptOwner {
-        // Make sure the candidate is already registered
-        assert(candidates[candidate]);
-        // Increment the vote for that candidate by 1.
-        votes[candidate] += 1;
-    }
+    // function voteFor(string memory candidateName) public allExceptOwner {
+    //     // Make sure the candidate is already registered
+    //     assert(candidates[candidateName]);
+    //     // Increment the vote for that candidate by 1.
+    //     votes[candidateName] += 1;
+    // }
     
-    function votesOf(string memory candidate) public view returns (uint8) {
-        // Make sure the candidate is already registered
-        assert(candidates[candidate]);
-        return votes[candidate];
-    }
+    // function votesOf(string memory candidateName) public view returns (uint256) {
+    //     // Make sure the candidate is already registered
+    //     assert(candidates[candidateName]);
+    //     return votes[candidateName];
+    // }
 }
