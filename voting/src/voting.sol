@@ -78,4 +78,10 @@ contract Voting {
         assert(hasCandidate(candidateName));
         return candidates[candidateName].votes;
     }
+    
+    function votersOf(string memory candidateName) public view returns (address[] memory) {
+        // Make sure the candidate is already registered
+        assert(hasCandidate(candidateName));
+        return candidates[candidateName].voters;
+    }
 }
