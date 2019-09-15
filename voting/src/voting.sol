@@ -44,8 +44,11 @@ contract Voting {
     }
     
     function createCandidate(string memory name) private returns (Candidate memory) {
-        address[] memory _voters;
-        return Candidate(userIDGenerator(), name, block.timestamp, 0, _voters);
+        Candidate memory candidate;
+        candidate.id = userIDGenerator();
+        candidate.name = name;
+        candidate.time_of_registration = block.timestamp;
+        return candidate;
     }
     
     function newCandidate(string memory candidateName) public onlyOwner {
