@@ -6,7 +6,7 @@ contract Voting {
     // Mapping of candidates that can be voted for.
     mapping (string => Candidate) public candidates;
 
-    uint8 private candidateCount = 0;
+    uint8 public candidateCount = 0;
     uint8 private user_id_counter = 0;
     
     function userIDGenerator() internal returns (uint8) {
@@ -49,7 +49,7 @@ contract Voting {
     }
     
     // Function to Create and Add a new candidate to the Map.
-    function createCandidate(string memory name) internal returns (Candidate memory) {
+    function createCandidate(string memory name) private returns (Candidate memory) {
         Candidate memory candidate;
         candidate.id = userIDGenerator();
         candidate.name = name;
