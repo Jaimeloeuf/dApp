@@ -68,6 +68,8 @@ contract Voting {
         assert(!hasCandidate(candidateName));
         // Create and add the candidate to the Map.
         createCandidate(candidateName);
+        // Increment the count for the total number of users
+        candidateCount += 1;
     }
     
     function removeCandidate(string memory candidateName) public onlyOwner {
@@ -75,6 +77,8 @@ contract Voting {
         assert(hasCandidate(candidateName));
         // Remove the candidate by setting its value to false.
         delete(candidates[candidateName]);
+        // Decrement the count for the total number of users
+        candidateCount -= 1;
     }
 
     function voteFor(string memory candidateName) public allExceptOwner {
