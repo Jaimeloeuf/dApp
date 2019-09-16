@@ -1,4 +1,6 @@
 pragma solidity 0.5.11;
+// Experimental feature turned on for constructor to receive an Array of Strings.
+pragma experimental ABIEncoderV2;
 
 contract Voting {
     // Mapping of candidates that can be voted for.
@@ -34,7 +36,10 @@ contract Voting {
         _;
     }
     
-    constructor() public {
+    constructor(string[] memory initial_candidates) public {
+        for (uint8 i = 0; i < initial_candidates.length; i++)
+            createCandidate(initial_candidates[i]);
+        
         owner = msg.sender;
     }
     
@@ -43,19 +48,26 @@ contract Voting {
             return true;
     }
     
-    function createCandidate(string memory name) private returns (Candidate memory) {
+    // Function to Create and Add a new candidate to the Map.
+    function createCandidate(string memory name) internal returns (Candidate memory) {
         Candidate memory candidate;
         candidate.id = userIDGenerator();
         candidate.name = name;
         candidate.time_of_registration = block.timestamp;
-        return candidate;
+        
+        // Add the candidate into the candidates mapping directly
+        candidates[name] = candidate;
+        
+        // Can potentially return the candidate struct too for Caller to use directly.
+        // Currently not used as it costs more gas.
+        // return candidate;
     }
     
     function newCandidate(string memory candidateName) public onlyOwner {
         // Make sure that the candidate is not already registered
         assert(!hasCandidate(candidateName));
-        // Register the candidate by adding it to the Map.
-        candidates[candidateName] = createCandidate(candidateName);
+        // Create and add the candidate to the Map.
+        createCandidate(candidateName);
     }
     
     function removeCandidate(string memory candidateName) public onlyOwner {
