@@ -26,13 +26,13 @@ contract Voting {
     
     // Modifier that only allows owner of the contract
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Non-Owner tried to access restricted funciton");
         _;
     }
     
     // Modifier that blocks owner of the contract
     modifier allExceptOwner() {
-        require(msg.sender != owner);
+        require(msg.sender != owner, "Owner tried to access restricted funciton");
         _;
     }
     
