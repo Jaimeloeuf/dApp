@@ -5,6 +5,9 @@ pragma experimental ABIEncoderV2;
 contract Voting {
     // Mapping of candidates that can be voted for.
     mapping (string => Candidate) public candidates;
+    
+    /* Events */
+    event debug_log(string description);
 
     uint8 public candidateCount = 0;
     uint8 private user_id_counter = 0;
@@ -53,6 +56,7 @@ contract Voting {
         Candidate memory candidate;
         candidate.id = userIDGenerator();
         candidate.name = name;
+        // Set time of registration to current block time. Should not be used for anything else other than being informational
         candidate.time_of_registration = block.timestamp;
         
         // Add the candidate into the candidates mapping directly
